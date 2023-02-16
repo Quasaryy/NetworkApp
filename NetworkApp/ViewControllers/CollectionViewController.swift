@@ -13,7 +13,7 @@ class CollectionViewController: UICollectionViewController {
     let insetForSection = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     let cellsInRow: CGFloat = 4
     var users: User?
-
+    
     // MARK: Override Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ class CollectionViewController: UICollectionViewController {
         // Getting data from remote host
         getData()
     }
-
+    
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let tabBar = segue.destination as! UITabBarController
@@ -41,26 +41,26 @@ class CollectionViewController: UICollectionViewController {
             agelVC.result = users?.results[index!]
         }
     }
-
+    
     // MARK: UICollectionViewDataSource
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return users?.results.count ?? 0
     }
-
+    
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Creating and casting custom cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
-    
+        
         // Configuring the cell
         cell.configureCell(model: users, indexPath: indexPath)
         
         return cell
     }
-
+    
     // MARK: UICollectionViewDelegate
-
+    
     //
-
+    
 }
 
 // MARK: Configure cell size
@@ -80,19 +80,17 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 // MARK: Getting data
 extension CollectionViewController {
     private func getData() {
-        if let url = URL(string: "https://randomuser.me/api/?results=100") {
-            
-            URLSession.shared.dataTask(with: url) { data, _, _ in
-                guard let data = data else { return }
-                do {
-                    self.users = try JSONDecoder().decode(User.self, from: data)
-                    DispatchQueue.main.async {
-                        self.collectionView.reloadData()
-                    }
-                } catch let error {
-                    print(error.localizedDescription)
+        guard let url = URL(string: "https://randomuser.me/api/?results=100") else { return }
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let data = data else { return }
+            do {
+                self.users = try JSONDecoder().decode(User.self, from: data)
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
                 }
-            }.resume()
-        }
+            } catch let error {
+                print(error.localizedDescription)
+            }
+        }.resume()
     }
 }
