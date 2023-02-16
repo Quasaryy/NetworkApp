@@ -36,17 +36,6 @@ struct ID: Decodable {
     let name: String
 }
 
-// MARK: - Coordinates
-struct Coordinates: Decodable {
-    let latitude, longitude: String
-}
-
-// MARK: - Street
-struct Street: Decodable {
-    let number: Int
-    let name: String
-}
-
 // MARK: - Login
 struct Login: Decodable {
     let uuid, username, password, salt: String
@@ -56,6 +45,9 @@ struct Login: Decodable {
 // MARK: - Name
 struct Name: Decodable {
     let title, first, last: String
+    var fullName: String {
+        return "\(title) \(first) \(last)"
+    }
 }
 
 // MARK: - Picture

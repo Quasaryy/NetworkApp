@@ -9,54 +9,50 @@ import UIKit
 
 class CollectionViewController: UICollectionViewController {
     
+    // MARK: Properties
+    let insetForSection = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    let cellsInRow: CGFloat = 4
     var users: User?
 
+    // MARK: Override Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Getting data from remote host
         getData()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Do any additional setup after loading the view.
     }
 
-    /*
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using [segue destinationViewController].
-        // Pass the selected object to the new view controller.
+        let tabBar = segue.destination as! UITabBarController
+        
+        if let nameVC = tabBar.viewControllers?[0] as? NameViewController {
+            let index = collectionView.indexPathsForSelectedItems?.first?.item
+            nameVC.result = users?.results[index!]
+        }
+        
+        if let emailVC = tabBar.viewControllers?[1] as? EmailViewController {
+            let index = collectionView.indexPathsForSelectedItems?.first?.item
+            emailVC.result = users?.results[index!]
+        }
+        
+        if let agelVC = tabBar.viewControllers?[2] as? AgeViewController {
+            let index = collectionView.indexPathsForSelectedItems?.first?.item
+            agelVC.result = users?.results[index!]
+        }
     }
-    */
 
     // MARK: UICollectionViewDataSource
-
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-
-
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return users?.results.count ?? 1
+        return users?.results.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // Creating and casting custom cell
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CollectionViewCell
     
-        // Configure the cell
-        cell.layer.cornerRadius = 10
-        let user = users?.results[indexPath.item]
-        let url = URL(string: user?.picture.medium ?? "https://randomuser.me/api/portraits/med/men/14.jpg")
-        
-        URLSession.shared.dataTask(with: url!) { data, _, _ in
-            DispatchQueue.main.async {
-                cell.userImage.image = UIImage(data: data!)
-            }
-        }.resume()
+        // Configuring the cell
+        cell.configureCell(model: users, indexPath: indexPath)
         
         return cell
     }
@@ -67,23 +63,23 @@ class CollectionViewController: UICollectionViewController {
 
 }
 
+// MARK: Configure cell size
 extension CollectionViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let availableWidth = collectionView.frame.width
-        let cellSize = (availableWidth - 10 * (4 + 1)) / 4
-
+        let cellSize = (availableWidth - insetForSection.left * (cellsInRow + 1)) / cellsInRow
         let size = CGSize(width: cellSize, height: cellSize)
         return size
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+        return insetForSection
     }
 }
 
+// MARK: Getting data
 extension CollectionViewController {
-    func getData() {
+    private func getData() {
         if let url = URL(string: "https://randomuser.me/api/?results=100") {
             
             URLSession.shared.dataTask(with: url) { data, _, _ in
