@@ -28,7 +28,7 @@
             </objects>
             <point key="canvasLocation" x="45.600000000000001" y="-117.39130434782609"/>
         </scene>
-        <!--Collection View Controller-->
+        <!--Some Users-->
         <scene sceneID="mTj-1o-QnP">
             <objects>
                 <collectionViewController id="xIa-xu-2y3" customClass="CollectionViewController" customModule="NetworkApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -72,19 +72,20 @@
                             <outlet property="delegate" destination="xIa-xu-2y3" id="ZLm-4q-NST"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" id="5CH-46-1TG"/>
+                    <navigationItem key="navigationItem" title="Some Users" id="5CH-46-1TG"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AJf-YZ-hu9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="984.79999999999995" y="-117.39130434782609"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Details-->
         <scene sceneID="4wu-iL-pTH">
             <objects>
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="YfT-Gt-7IR" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="2I4-kx-e6V"/>
+                    <navigationItem key="navigationItem" title="Details" id="2I4-kx-e6V"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Oea-Xv-kYh">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
