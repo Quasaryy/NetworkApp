@@ -77,11 +77,24 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-// MARK: Getting data
 extension CollectionViewController {
+    // MARK: Getting data
     private func getData() {
         guard let url = URL(string: "https://randomuser.me/api/?results=100") else { return }
-        URLSession.shared.dataTask(with: url) { data, _, _ in
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            
+            if let error = error {
+                print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.alert(title: "Something wrong", message: error.localizedDescription)
+                }
+                return
+            }
+            
+            if let response = response {
+                print(response)
+            }
+            
             guard let remtoteData = data else { return }
             do {
                 self.users = try JSONDecoder().decode(User.self, from: remtoteData)
@@ -90,8 +103,19 @@ extension CollectionViewController {
                 }
             } catch let error {
                 print(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.alert(title: "Remote data decoding error", message: "We are working on fixing the bug, please try again later.")
+                }
             }
         }.resume()
+    }
+    
+    // MARK: Alert controller
+    func alert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let buttonOK = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(buttonOK)
+        present(alert, animated: true)
     }
     
 }
