@@ -14,16 +14,17 @@ class CollectionViewCell: UICollectionViewCell {
 }
 
 extension CollectionViewCell {
-    func configureCell(model: User?, indexPath: IndexPath) {
+    func configureCell(model: User, indexPath: IndexPath) {
         // Configure the cell corner radius
         self.layer.cornerRadius = 10
-        let user = model?.results[indexPath.item]
+        let user = model.results[indexPath.item]
         // Getting URL
-        let url = URL(string: user?.picture.medium ?? "https://randomuser.me/api/portraits/med/men/14.jpg")
+        guard let url = URL(string: user.picture.medium) else { return }
         // Assigning images in URLSession
-        URLSession.shared.dataTask(with: url!) { data, _, _ in
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            guard let remoteData = data else { return }
             DispatchQueue.main.async {
-                self.userImage.image = UIImage(data: data!)
+                self.userImage.image = UIImage(data: remoteData)
             }
         }.resume()
     }

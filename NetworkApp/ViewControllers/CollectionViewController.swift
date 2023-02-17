@@ -12,7 +12,7 @@ class CollectionViewController: UICollectionViewController {
     // MARK: Properties
     let insetForSection = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     let cellsInRow: CGFloat = 4
-    var users: User?
+    var users = User(results: [])
     
     // MARK: Override Methods
     override func viewDidLoad() {
@@ -24,27 +24,27 @@ class CollectionViewController: UICollectionViewController {
     
     // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let tabBar = segue.destination as! UITabBarController
+        guard let tabBar = (segue.destination as? UITabBarController) else { return }
         
         if let nameVC = tabBar.viewControllers?[0] as? NameViewController {
-            let index = collectionView.indexPathsForSelectedItems?.first?.item
-            nameVC.result = users?.results[index!]
+            guard let index = collectionView.indexPathsForSelectedItems?.first?.item else { return }
+            nameVC.result = users.results[index]
         }
         
         if let emailVC = tabBar.viewControllers?[1] as? EmailViewController {
-            let index = collectionView.indexPathsForSelectedItems?.first?.item
-            emailVC.result = users?.results[index!]
+            guard let index = collectionView.indexPathsForSelectedItems?.first?.item else { return }
+            emailVC.result = users.results[index]
         }
         
         if let agelVC = tabBar.viewControllers?[2] as? AgeViewController {
-            let index = collectionView.indexPathsForSelectedItems?.first?.item
-            agelVC.result = users?.results[index!]
+            guard let index = collectionView.indexPathsForSelectedItems?.first?.item else { return }
+            agelVC.result = users.results[index]
         }
     }
     
     // MARK: UICollectionViewDataSource
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return users?.results.count ?? 0
+        return users.results.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -82,9 +82,9 @@ extension CollectionViewController {
     private func getData() {
         guard let url = URL(string: "https://randomuser.me/api/?results=100") else { return }
         URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data else { return }
+            guard let remtoteData = data else { return }
             do {
-                self.users = try JSONDecoder().decode(User.self, from: data)
+                self.users = try JSONDecoder().decode(User.self, from: remtoteData)
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
@@ -93,4 +93,5 @@ extension CollectionViewController {
             }
         }.resume()
     }
+    
 }
